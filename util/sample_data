@@ -1,0 +1,124 @@
+import random
+import json
+import csv
+from datetime import datetime
+import base64
+import os
+
+# Function to generate structured data for various sensors
+def generate_structured_data(sensor_type):
+    if sensor_type == "TempSensor":
+        return {
+            "device_id": f"TempSensor_{random.randint(1, 10)}",
+            "timestamp": datetime.utcnow().isoformat(),
+            "temperature": round(random.uniform(20.0, 30.0), 2),
+            "humidity": round(random.uniform(30.0, 60.0), 2),
+        }
+    elif sensor_type == "HumidiProbe":
+        return {
+            "device_id": f"HumidiProbe_{random.randint(1, 10)}",
+            "timestamp": datetime.utcnow().isoformat(),
+            "humidity": round(random.uniform(30.0, 70.0), 2),
+        }
+    elif sensor_type == "CleanMonitor":
+        return {
+            "device_id": f"CleanMonitor_{random.randint(1, 5)}",
+            "timestamp": datetime.utcnow().isoformat(),
+            "air_quality": random.choice(["Good", "Moderate", "Poor"]),
+        }
+    elif sensor_type == "EyeCon2":
+        return {
+            "device_id": f"EyeCon2_{random.randint(1, 3)}",
+            "timestamp": datetime.utcnow().isoformat(),
+            "particle_size": round(random.uniform(50.0, 5500.0), 2),
+        }
+
+# Function to generate multiple structured data records
+def generate_multiple_structured_data(sensor_types, num_records=10):
+    data = []
+    for _ in range(num_records):
+        sensor_type = random.choice(sensor_types)
+        data.append(generate_structured_data(sensor_type))
+    return data
+
+# Function to generate semi-structured log data
+def generate_semi_structured_data():
+    return {
+        "device_id": random.choice(["TempSensor_001", "HumidiProbe_001", "CleanMonitor_001"]),
+        "log_level": random.choice(["INFO", "WARNING", "ERROR"]),
+        "message": random.choice([
+            "Sensor recalibration completed.",
+            "High humidity detected!",
+            "Air quality levels critical.",
+            "Temperature within safe range.",
+            "Particle size exceeding threshold.",
+        ]),
+        "timestamp": datetime.utcnow().isoformat(),
+    }
+
+# Function to generate multiple semi-structured data records
+def generate_multiple_semi_structured_data(num_records=10):
+    return [generate_semi_structured_data() for _ in range(num_records)]
+
+# Function to generate unstructured data (images from EyeCon2)
+def generate_unstructured_data(image_path, num_records=5):
+    if not os.path.exists(image_path):
+        raise FileNotFoundError(f"Image file not found at {image_path}")
+    with open(image_path, "rb") as img_file:
+        encoded_image = base64.b64encode(img_file.read()).decode("utf-8")
+    return [
+        {
+            "device_id": f"EyeCon2_{random.randint(1, 3)}",
+            "timestamp": datetime.utcnow().isoformat(),
+            "image_data": encoded_image,
+        }
+        for _ in range(num_records)
+    ]
+
+# Function to write structured data to a CSV file
+def write_structured_data_to_csv(file_path, data):
+    """
+    Saves structured data records to a CSV file.
+    :param file_path: Path to save the CSV file.
+    :param data: List of structured data records.
+    """
+    fieldnames = [
+        "device_id",
+        "timestamp",
+        "temperature",
+        "humidity",
+        "air_quality",
+        "particle_size",
+    ]
+    with open(file_path, mode="w", newline="") as csv_file:
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+        writer.writeheader()
+        for record in data:
+            # Fill in missing fields with None
+            for field in fieldnames:
+                record.setdefault(field, None)
+            writer.writerow(record)
+    print(f"Structured data saved to CSV: {file_path}")
+
+# Generate multiple structured data records
+sensor_types = ["TempSensor", "HumidiProbe", "CleanMonitor", "EyeCon2"]
+structured_data = generate_multiple_structured_data(sensor_types, num_records=50)
+
+# Generate multiple semi-structured log records
+semi_structured_data = generate_multiple_semi_structured_data(num_records=20)
+
+# Generate multiple unstructured data records
+try:
+    unstructured_data = generate_unstructured_data("particle_picture.jpg", num_records=10)
+except FileNotFoundError as e:
+    print(e)
+    unstructured_data = []
+
+# Print examples
+print("Sample Structured Data:\n", json.dumps(structured_data[:2], indent=2))
+print("\nSample Semi-Structured Data:\n", json.dumps(semi_structured_data[:2], indent=2))
+print("\nSample Unstructured Data (First Record):\n", json.dumps(unstructured_data[0], indent=2) if unstructured_data else "No data")
+
+# Write structured data to a CSV file
+csv_file_path = "structured_data_with_loops.csv"
+write_structured_data_to_csv(csv_file_path, structured_data)
