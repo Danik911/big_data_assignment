@@ -1,0 +1,68 @@
+import random
+import csv
+from datetime import datetime
+import os
+
+# Define the function for each IoT device to generate structured data
+def generate_temp_sensor_data():
+    return {
+        "device_id": f"TempSensor_{random.randint(1, 10)}",
+        "timestamp": datetime.utcnow().isoformat(),
+        "temperature": round(random.uniform(20.0, 30.0), 2),
+        "humidity": round(random.uniform(30.0, 60.0), 2)
+    }
+
+def generate_humidi_probe_data():
+    return {
+        "device_id": f"HumidiProbe_{random.randint(1, 10)}",
+        "timestamp": datetime.utcnow().isoformat(),
+        "humidity": round(random.uniform(30.0, 70.0), 2)
+    }
+
+def generate_clean_monitor_data():
+    return {
+        "device_id": f"CleanMonitor_{random.randint(1, 5)}",
+        "timestamp": datetime.utcnow().isoformat(),
+        "air_quality": random.choice(["Good", "Moderate", "Poor"]),
+        "particle_count": random.randint(0, 100)  # Simulated additional field
+    }
+
+def generate_eyecon2_data():
+    return {
+        "device_id": f"EyeCon2_{random.randint(1, 3)}",
+        "timestamp": datetime.utcnow().isoformat(),
+        "particle_size": round(random.uniform(50.0, 5500.0), 2),
+        "shape": random.choice(["Spherical", "Irregular"])  # Simulated additional field
+    }
+
+# Function to generate multiple records for a sensor
+def generate_sensor_data(generator_function, num_records=1000):
+    return [generator_function() for _ in range(num_records)]
+
+# Function to save data to a CSV file
+def save_to_csv(file_path, data):
+    if not data:
+        print(f"No data to save for {file_path}.")
+        return
+    fieldnames = data[0].keys()  # Use the keys from the first record as column headers
+    with open(file_path, mode="w", newline="") as csv_file:
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(data)
+    print(f"Data saved to CSV: {file_path}")
+
+# Generate data for each sensor
+num_records = 1000
+temp_sensor_data = generate_sensor_data(generate_temp_sensor_data, num_records)
+humidi_probe_data = generate_sensor_data(generate_humidi_probe_data, num_records)
+clean_monitor_data = generate_sensor_data(generate_clean_monitor_data, num_records)
+eyecon2_data = generate_sensor_data(generate_eyecon2_data, num_records)
+
+# Save each sensor's data to its own CSV file
+output_directory = "sensor_data"
+os.makedirs(output_directory, exist_ok=True)
+
+save_to_csv(os.path.join(output_directory, "temp_sensor_data.csv"), temp_sensor_data)
+save_to_csv(os.path.join(output_directory, "humidi_probe_data.csv"), humidi_probe_data)
+save_to_csv(os.path.join(output_directory, "clean_monitor_data.csv"), clean_monitor_data)
+save_to_csv(os.path.join(output_directory, "eyecon2_data.csv"), eyecon2_data)
