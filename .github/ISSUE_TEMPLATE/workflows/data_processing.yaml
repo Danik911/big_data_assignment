@@ -1,0 +1,28 @@
+name: data_processing
+
+on:
+  push:
+    paths:
+      - "data/**"  # Trigger when any file in the data folder is added, modified, or deleted
+
+jobs:
+  process_data:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.9
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pandas sqlite3 scipy
+
+    - name: Run data validation and processing
+      run: |
+        python Danik911/big_data_assignment/data_processing/data_validation_script.py
