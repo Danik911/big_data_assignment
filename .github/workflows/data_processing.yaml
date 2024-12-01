@@ -3,7 +3,7 @@ name: data_processing
 on:
   push:
     paths:
-      - "data/**"  # Trigger when any file in the data folder is added, modified, or deleted
+      - "Danik911/big_data_assignment/data/structured_data"  # Trigger when any file in the data folder is added, modified, or deleted
 
 jobs:
   process_data:
