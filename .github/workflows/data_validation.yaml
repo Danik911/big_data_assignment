@@ -43,6 +43,10 @@ jobs:
           python -m pip install --upgrade pip wheel
           pip install pandas scipy psycopg2-binary
 
+      - name: List Repository Files
+        run: |
+          ls -R
+
       - name: Run Data Validation Script
         run: |
-          python Danik911/big_data_assignment/data_processing/data_validation_script.py
+          python data_processing/data_validation_script.py
