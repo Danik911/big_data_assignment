@@ -131,7 +131,7 @@ def save_to_database(df, db_name, table_name):
 
 # Execute the pipeline
 def main():
-    csv_directory = "sensor_data"  # Directory containing CSV files
+    csv_directory = "data/structured_data"  # Directory containing CSV files
     database_name = "sensors_data.sqlite"
     table_name = "sensors"
 
