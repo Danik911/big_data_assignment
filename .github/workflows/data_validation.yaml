@@ -45,4 +45,4 @@ jobs:
 
       - name: Run Data Validation Script
         run: |
-          python big_data_assignment/data_processing/data_validation_script.py
+          python Danik911/big_data_assignment/data_processing/data_validation_script.py
