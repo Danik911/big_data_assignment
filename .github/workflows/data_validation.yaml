@@ -50,3 +50,12 @@ jobs:
       - name: Run Data Validation Script
         run: |
           python data_processing/data_validation_script.py
+
+      - name: Upload Enriched Data to GitHub
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add enriched_data.csv
+          git commit -m "Add enriched data file from data validation"
+          git push origin main
+
