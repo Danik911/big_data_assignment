@@ -8,7 +8,7 @@ def extract_unique_devices(file_path, device_type):
     """
     df = pd.read_csv(file_path)
     unique_devices = df['device_id'].unique()
-    return [(device_id, device_type, "Unknown", "Active") for device_id in unique_devices]
+    return [(device_id, device_type, "Active") for device_id in unique_devices]
 
 def populate_master_devices():
     """
