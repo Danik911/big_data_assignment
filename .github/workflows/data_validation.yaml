@@ -57,10 +57,6 @@ jobs:
             git commit -m "Add enriched data file from data processing"
             git push origin main
           fi
-      
-      - name: Debugging: Check for Enriched Data
-        run: |
-          echo "Checking for enriched_data.csv:"
-          ls data/
+
 
 
