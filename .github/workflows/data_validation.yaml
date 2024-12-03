@@ -57,12 +57,7 @@ jobs:
             git commit -m "Add enriched data file from data processing"
             git push origin main
           fi
-
-      - name: Debugging: List Directory Contents
-        run: |
-          echo "Current directory contents:"
-          ls -R
-
+      
       - name: Debugging: Check for Enriched Data
         run: |
           echo "Checking for enriched_data.csv:"
