@@ -53,6 +53,11 @@ jobs:
           git config --global user.email "actions@github.com"
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
 
+      - name: Verify Data Directory Contents
+        run: |
+          echo "Checking data directory contents:"
+          ls data/
+
       - name: Commit and Push Changes
         run: |
           git add data/enriched_data.csv
@@ -60,5 +65,15 @@ jobs:
             echo "No changes to commit."
           else
             git commit -m "Add enriched data file from data processing"
+            git push origin main
+          fi
+
+      - name: Add master_data.sqlite to Git
+        run: |
+          git add data/master_data.sqlite
+          if git diff-index --quiet HEAD; then
+            echo "No changes to commit for master_data.sqlite."
+          else
+            git commit -m "Add master_data.sqlite"
             git push origin main
           fi
