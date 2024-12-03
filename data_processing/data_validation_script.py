@@ -129,14 +129,21 @@ def save_to_database(df, db_name, table_name):
     conn.close()
     print(f"Data saved to database: {db_name}, table: {table_name}")
 
-# Execute the pipeline
 def main():
     csv_directory = "data/structured_data"  # Directory containing CSV files
     database_name = "sensors_data.sqlite"
     table_name = "sensors"
 
-    # Merge and save
+    # Merge and clean data
     merged_data = merge_csv_files(csv_directory)
+
+    # Save validated data to CSV for enrichment
+    os.makedirs("data", exist_ok=True)  # Ensure 'data' directory exists
+    validated_data_path = "data/validated_data.csv"
+    merged_data.to_csv(validated_data_path, index=False)
+    print(f"Validated data saved to {validated_data_path}")
+
+    # Save validated data to SQLite database
     save_to_database(merged_data, database_name, table_name)
 
 if __name__ == "__main__":
