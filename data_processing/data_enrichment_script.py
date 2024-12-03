@@ -15,7 +15,7 @@ def save_enriched_data_to_database(df, db_path, table_name):
     conn.close()
     print(f"Enriched data saved to database: {db_path}, table: {table_name}")
 
-def enrich_data(sensor_data_path, master_db_path, enriched_data_output):
+def enrich_data(sensor_data_path, master_db_path, enriched_data_output, enriched_db_path, table_name):
     """
     Enrich sensor data with master data and save the enriched dataset.
     
@@ -23,6 +23,8 @@ def enrich_data(sensor_data_path, master_db_path, enriched_data_output):
     - sensor_data_path: Path to the validated sensor data CSV file.
     - master_db_path: Path to the SQLite database containing master data.
     - enriched_data_output: Path to save the enriched data as a CSV file.
+    - enriched_db_path: Path to save the enriched data as a SQLite database.
+    - table_name: Name of the table to store the enriched data.
     """
     # Load validated sensor data
     sensor_data = pd.read_csv(sensor_data_path)
@@ -50,6 +52,7 @@ def enrich_data(sensor_data_path, master_db_path, enriched_data_output):
 
     # Close the database connection
     conn.close()
+
 
 if __name__ == "__main__":
     # Define file paths
