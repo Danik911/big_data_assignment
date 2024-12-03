@@ -77,3 +77,14 @@ jobs:
             git commit -m "Add master_data.sqlite"
             git push origin main
           fi
+
+      - name: Add enriched_data.sqlite to Git
+        run: |
+          git add data/enriched_data.sqlite
+          if git diff-index --quiet HEAD; then
+            echo "No changes to commit for enriched_data.sqlite."
+          else
+            git commit -m "Add enriched data database"
+            git push origin main
+          fi
+

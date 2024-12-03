@@ -27,7 +27,6 @@ def populate_master_devices():
     CREATE TABLE IF NOT EXISTS master_devices (
         device_id TEXT PRIMARY KEY,
         type TEXT NOT NULL,
-        location TEXT,
         status TEXT
     );
     """)
@@ -41,8 +40,8 @@ def populate_master_devices():
 
     # Insert devices into master_devices table
     cursor.executemany("""
-    INSERT OR IGNORE INTO master_devices (device_id, type, location, status)
-    VALUES (?, ?, ?, ?);
+    INSERT OR IGNORE INTO master_devices (device_id, type, status)
+    VALUES (?, ?, ?);
     """, devices)
 
     # Commit and close connection
