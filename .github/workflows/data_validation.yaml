@@ -1,4 +1,4 @@
-name: Data Validation
+name: Data Validation and Enrichment
 
 on:
   push:
@@ -14,21 +14,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:alpine
-        ports:
-          - 5432:5432
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: pgs3cr3t
-          POSTGRES_DB: testdb
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -41,21 +26,46 @@ jobs:
       - name: Install Python Dependencies
         run: |
           python -m pip install --upgrade pip wheel
-          pip install pandas scipy psycopg2-binary
-
-      - name: List Repository Files
-        run: |
-          ls -R
+          pip install pandas scipy
 
       - name: Run Data Validation Script
         run: |
           python data_processing/data_validation_script.py
 
-      - name: Upload Enriched Data to GitHub
+      - name: Run Data Enrichment Script
         run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-          git add enriched_data.csv
-          git commit -m "Add enriched data file from data validation"
-          git push origin main
+          python data_processing/data_enrichment_script.py
+
+      - name: Verify Enriched Data File Exists
+        run: |
+          if [ ! -f "data/enriched_data.csv" ]; then
+            echo "Error: enriched_data.csv not found!"
+            exit 1
+          fi
+
+      - name: Set up Git authentication
+        run: |
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+
+
+      - name: Commit and Push Changes
+        run: |
+          git add data/enriched_data.csv
+          if git diff-index --quiet HEAD; then
+            echo "No changes to commit."
+          else
+            git commit -m "Add enriched data file from data processing"
+            git push origin main
+          fi
+
+      - name: Debugging: List Directory Contents
+        run: |
+          echo "Current directory contents:"
+          ls -R
+
+      - name: Debugging: Check for Enriched Data
+        run: |
+          echo "Checking for enriched_data.csv:"
+          ls data/
+
 
